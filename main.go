@@ -8,8 +8,8 @@ import (
 	"flag"
 	"log"
 
-	"github.com/digitecgalaxus/terraform-provider-hetznerrobot/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"terraform-provider-hetznerrobot/internal/provider"
 )
 
 var (
@@ -31,7 +31,7 @@ func main() {
 		// TODO: Update this string with the published name of your provider.
 		// Also update the tfplugindocs generate command to either remove the
 		// -provider-name flag or set its value to the updated provider name.
-		Address: "registry.terraform.io/hashicorp/scaffolding",
+		Address: "digitecgalaxus.ch/DigitecGalaxus/hetznerrobot",
 		Debug:   debug,
 	}
 

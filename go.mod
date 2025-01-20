@@ -1,4 +1,4 @@
-module github.com/digitecgalaxus/terraform-provider-hetznerrobot
+module terraform-provider-hetznerrobot
 
 go 1.22.7
 
