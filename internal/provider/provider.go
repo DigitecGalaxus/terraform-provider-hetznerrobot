@@ -1,15 +1,14 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Digitec Galaxus AG
+// SPDX-License-Identifier: MIT
 
 package provider
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/function"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -31,7 +30,8 @@ type HetznerRobotProvider struct {
 
 // HetznerRobotProviderModel describes the provider data model.
 type HetznerRobotProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
+	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
 }
 
 func (p *HetznerRobotProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -42,42 +42,59 @@ func (p *HetznerRobotProvider) Metadata(ctx context.Context, req provider.Metada
 func (p *HetznerRobotProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
-				Optional:            true,
+			"username": schema.StringAttribute{
+				MarkdownDescription: "Username for the robot webservice",
+				Required:            true,
+			},
+			"password": schema.StringAttribute{
+				MarkdownDescription: "Password for the robot webservice",
+				Required:            true,
 			},
 		},
 	}
 }
 
 func (p *HetznerRobotProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
-	var data HetznerRobotProviderModel
+	var config HetznerRobotProviderModel
 
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	if config.Username.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("hetznerrobot_username"),
+			"No username for hetznerrobot.",
+			"specify a username for hetznerrobot in your provider configuration. https://robot.hetzner.com/preferences/index",
+		)
+	}
+	if config.Password.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("hetznerrobot_password"),
+			"No password for hetznerrobot.",
+			"specify a password for hetznerrobot in your provider configuration. https://robot.hetzner.com/preferences/index",
+		)
 	}
 
 	// Configuration values are now available.
 	// if data.Endpoint.IsNull() { /* ... */ }
 
 	// Example client configuration for data sources and resources
-	client := http.DefaultClient
+
+	client := NewClient(config.Username.ValueStringPointer(), config.Password.ValueStringPointer())
+
 	resp.DataSourceData = client
 	resp.ResourceData = client
 }
 
 func (p *HetznerRobotProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewExampleResource,
-	}
+	return []func() resource.Resource{}
 }
 
 func (p *HetznerRobotProvider) EphemeralResources(ctx context.Context) []func() ephemeral.EphemeralResource {
-	return []func() ephemeral.EphemeralResource{
-		NewExampleEphemeralResource,
-	}
+	return []func() ephemeral.EphemeralResource{}
 }
 
 func (p *HetznerRobotProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
@@ -87,9 +104,7 @@ func (p *HetznerRobotProvider) DataSources(ctx context.Context) []func() datasou
 }
 
 func (p *HetznerRobotProvider) Functions(ctx context.Context) []func() function.Function {
-	return []func() function.Function{
-		NewExampleFunction,
-	}
+	return []func() function.Function{}
 }
 
 func New(version string) func() provider.Provider {

@@ -1,5 +1,5 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Digitec Galaxus AG
+// SPDX-License-Identifier: MIT
 
 package provider
 
@@ -18,7 +18,7 @@ func TestAccExampleDataSource(t *testing.T) {
 			{
 				Config: testAccExampleDataSourceConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.scaffolding_example.test", "id", "example-id"),
+					resource.TestCheckResourceAttr("data.hetznerrobot_servers.test", "id", "example-id"),
 				),
 			},
 		},
@@ -26,7 +26,7 @@ func TestAccExampleDataSource(t *testing.T) {
 }
 
 const testAccExampleDataSourceConfig = `
-data "scaffolding_example" "test" {
+data "hetznerrobot_servers" "test" {
   configurable_attribute = "example"
 }
 `
