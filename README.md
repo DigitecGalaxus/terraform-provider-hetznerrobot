@@ -33,7 +33,7 @@ Then commit the changes to `go.mod` and `go.sum`.
 
 ## Using the provider
 
-Fill this in for each provider
+[docs](https://github.com/DigitecGalaxus/terraform-provider-hetznerrobot/tree/master/docs)
 
 ## Developing the Provider
 
@@ -50,3 +50,7 @@ In order to run the full suite of Acceptance tests, run `make testacc`.
 ```shell
 make testacc
 ```
+
+## Releasing a new version
+
+The action in this repository is triggered by creating a git tag with a vX.Y.Z format. There is also a github action setup in the org that communicates to the terraform registry via a [webhook](https://developer.hashicorp.com/terraform/registry/providers/publishing#webhooks)
