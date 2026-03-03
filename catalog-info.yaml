@@ -1,0 +1,24 @@
+metadata:
+  name: repo-terraform-provider-hetznerrobot
+  title: terraform-provider-hetznerrobot
+spec:
+  type: repository
+  owner: blackjack
+kind: Resource
+apiVersion: backstage.io/v1alpha1
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pc-terraform-provider-hetznerrobot
+  description: Repository containing a terraform provider which can be used to manage hetzner bare metal servers over their webservice api.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  tags:
+  - buildserver
+  title: terraform-provider-hetznerrobot
+spec:
+  type: platform-component
+  lifecycle: production
+  owner: blackjack
+  productGroup: pg-build-package-release
